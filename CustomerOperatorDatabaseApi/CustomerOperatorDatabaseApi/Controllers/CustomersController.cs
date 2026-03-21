@@ -2,6 +2,7 @@ using CustomerOperatorDatabaseApi.Entities;
 using CustomerOperatorDatabaseApi.Model;
 using CustomerOperatorDatabaseApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace CustomerOperatorDatabaseApi.Controllers
 {
@@ -10,22 +11,19 @@ namespace CustomerOperatorDatabaseApi.Controllers
     public class CustomersController : ControllerBase
     {
         private readonly ICustomersRepository _customersRepository;
-        public CustomersController(ICustomersRepository customersRepository)
+        private readonly IMapper _mapper;
+
+        public CustomersController(ICustomersRepository customersRepository, IMapper mapper)
         {
             _customersRepository = customersRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
         {
             var customers = await _customersRepository.GetCustomersAsync();
-            var customerDtos = customers.Select(c => new CustomerDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                OperatorId = c.OperatorId,
-                OperatorName = c.Operator.Name
-            });
+            var customerDtos = _mapper.Map<IEnumerable<CustomerDto>>(customers);
             return Ok(customerDtos);
         }
     }

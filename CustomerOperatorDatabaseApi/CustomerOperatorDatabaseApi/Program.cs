@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ICustomersRepository, CustomersRepository>();
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddControllers();
 
 builder.Services.AddControllersWithViews();

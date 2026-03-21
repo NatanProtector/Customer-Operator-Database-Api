@@ -1,0 +1,16 @@
+using AutoMapper;
+using CustomerOperatorDatabaseApi.Entities;
+using CustomerOperatorDatabaseApi.Model;
+
+namespace CustomerOperatorDatabaseApi.Profiles
+{
+    public class CustomerProfile : Profile
+    {
+        public CustomerProfile()
+        {
+            CreateMap<Customer, CustomerDto>()
+                .ForMember(dest => dest.OperatorName, 
+                    opt => opt.MapFrom(src => src.Operator.Name));
+        }
+    }
+}
