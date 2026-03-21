@@ -5,6 +5,7 @@
 ```bash
 cd CustomerOperatorDatabaseApi
 dotnet restore
-dotnet ef database update
-dotnet run
 ```
+
+and then in Package Manager:
+Update-Database
