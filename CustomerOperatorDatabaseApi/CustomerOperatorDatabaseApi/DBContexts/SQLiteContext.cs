@@ -7,10 +7,10 @@ namespace CustomerOperatorDatabaseApi.DBContexts
     {
         public DbSet<Entities.Email> Emails { get; set; }
         public DbSet<Entities.Customer> Customers { get; set; }
-
         public DbSet<Entities.Operator> Operators { get; set; }
         public SQLiteContext(DbContextOptions<SQLiteContext> options) : base(options)
         {
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 
