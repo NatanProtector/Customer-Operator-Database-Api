@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CustomerOperatorDatabaseApi.Services
 {
-    public class CustomersRepository: ICustomersRepository
+    public class Repository: IRepository
     {
         private readonly SQLiteContext _context;
-        public CustomersRepository(SQLiteContext context)
+        public Repository(SQLiteContext context)
         {
             _context = context
                 ?? throw new ArgumentNullException(nameof(context));
@@ -20,6 +20,15 @@ namespace CustomerOperatorDatabaseApi.Services
                 .ToListAsync();
 
             return customers;
+        }
+
+        public async Task<IEnumerable<Operator>> GetOperatorsAsync()
+        {
+            IEnumerable<Operator> operators = await _context.Operators
+                .Include(o => o.Customers)
+                .Include(o => o.Emails)
+                .ToListAsync();
+            return operators;
         }
     }
 }
