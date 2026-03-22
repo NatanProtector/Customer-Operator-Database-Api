@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CustomerOperatorDatabaseApi.Entities;
 using CustomerOperatorDatabaseApi.Model;
 using CustomerOperatorDatabaseApi.Services;
 using Microsoft.AspNetCore.Mvc;

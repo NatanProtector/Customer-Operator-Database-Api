@@ -19,7 +19,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IRepository, Repository>();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(cfg =>
+{
+    // optional config here
+}, typeof(Program));
 
 builder.Services.AddControllers();
 
