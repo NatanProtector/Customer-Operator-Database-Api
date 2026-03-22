@@ -11,7 +11,6 @@ namespace CustomerOperatorDatabaseApi.Entities
 
         [MaxLength(200)]
         public string Name { get; set; }
-
         public List<Email> Emails { get; set; } = new();
         public List<Customer> Customers { get; set; } = new();
     }

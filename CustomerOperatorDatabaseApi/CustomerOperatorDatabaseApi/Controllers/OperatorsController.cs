@@ -1,30 +1,30 @@
+﻿using AutoMapper;
 using CustomerOperatorDatabaseApi.Entities;
 using CustomerOperatorDatabaseApi.Model;
 using CustomerOperatorDatabaseApi.Services;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
 
 namespace CustomerOperatorDatabaseApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CustomersController : ControllerBase
+    public class OperatorsController : Controller
     {
         private readonly IRepository _repository;
         private readonly IMapper _mapper;
 
-        public CustomersController(IRepository customersRepository, IMapper mapper)
+        public OperatorsController(IRepository customersRepository, IMapper mapper)
         {
             _repository = customersRepository;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
+        public async Task<IActionResult> GetOperators()
         {
-            var customers = await _repository.GetCustomersAsync();
-            var customerDtos = _mapper.Map<IEnumerable<CustomerDto>>(customers);
-            return Ok(customerDtos);
+            var operators = await _repository.GetOperatorsAsync();
+            var operatorDtos = _mapper.Map<IEnumerable<OperatorDto>>(operators);
+            return Ok(operatorDtos);
         }
     }
 }
