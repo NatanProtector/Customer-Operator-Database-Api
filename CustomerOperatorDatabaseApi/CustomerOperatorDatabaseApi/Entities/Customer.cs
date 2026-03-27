@@ -10,6 +10,7 @@ namespace CustomerOperatorDatabaseApi.Entities
         public Guid Id { get; set; }
 
         [MaxLength(200)]
+        [Required]
         public string Name { get; set; }    
 
         [ForeignKey(nameof(Operator))]

@@ -26,5 +26,18 @@ namespace CustomerOperatorDatabaseApi.Controllers
             var customerDtos = _mapper.Map<IEnumerable<CustomerDto>>(customers);
             return Ok(customerDtos);
         }
+
+
+        [HttpPost]
+        public async Task<ActionResult> CreateCustomer([FromBody] CustomerForCreationDto customerDto)
+        {
+            var customerEntity = _mapper.Map<Customer>(customerDto);
+            var result = await _repository.CreateCustomerAsync(customerEntity);
+            if (!result)
+            {
+                return BadRequest("Failed to create customer.");
+            }
+            return CreatedAtAction(nameof(GetCustomers), new { id = customerEntity.Id }, customerDto);
+        }
     }
 }

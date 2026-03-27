@@ -13,6 +13,76 @@ namespace CustomerOperatorDatabaseApi.Services
                 ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public async Task<bool> CreateCustomerAsync(Customer customerEntity)
+        {
+            if (customerEntity == null)
+            {
+                throw new ArgumentNullException(nameof(customerEntity));
+            }
+
+            try
+            {
+                await _context.Customers.AddAsync(customerEntity);
+                await _context.SaveChangesAsync();
+            }
+
+            catch (Exception ex)
+            {
+                // Log the exception (you can use a logging framework here)
+                Console.WriteLine($"An error occurred while adding the operator: {ex.Message}");
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> CreateOperatorAsync(Operator operatorEntity)
+        {
+
+            if (operatorEntity == null)
+            {
+                throw new ArgumentNullException(nameof(operatorEntity));
+            }
+
+            try {
+                // Handle emails: check if they exist, if not create them
+                var emailsToLink = new List<Email>();
+
+                foreach (var email in operatorEntity.Emails)
+                {
+                    // Check if email already exists in database
+                    var existingEmail = await _context.Emails
+                        .FirstOrDefaultAsync(e => e.Address == email.Address);
+
+                    if (existingEmail != null)
+                    {
+                        // Use existing email
+                        emailsToLink.Add(existingEmail);
+                    }
+                    else
+                    {
+                        // Create new email
+                        emailsToLink.Add(email);
+                    }
+                }
+
+                // Replace the emails collection with the processed list
+                operatorEntity.Emails = emailsToLink;
+
+                await _context.Operators.AddAsync(operatorEntity);
+                await _context.SaveChangesAsync();
+            }
+
+            catch (Exception ex)
+            {
+                // Log the exception (you can use a logging framework here)
+                Console.WriteLine($"An error occurred while adding the operator: {ex.Message}");
+                return false;
+            }
+
+            return true;
+        }
+
         async public Task<IEnumerable<Customer>> GetCustomersAsync()
         {
             IEnumerable<Customer> customers = await _context.Customers
@@ -30,5 +100,6 @@ namespace CustomerOperatorDatabaseApi.Services
                 .ToListAsync();
             return operators;
         }
+
     }
 }

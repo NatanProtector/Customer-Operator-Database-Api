@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CustomerOperatorDatabaseApi.Entities;
 using CustomerOperatorDatabaseApi.Model;
 using CustomerOperatorDatabaseApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -22,8 +23,19 @@ namespace CustomerOperatorDatabaseApi.Controllers
         public async Task<IActionResult> GetOperators()
         {
             var operators = await _repository.GetOperatorsAsync();
-            var operatorDtos = _mapper.Map<IEnumerable<OperatorDto>>(operators);
+            IEnumerable<OperatorDto> operatorDtos = _mapper.Map<IEnumerable<OperatorDto>>(operators);
             return Ok(operatorDtos);
         }
-    }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOperator([FromBody] OperatorForCreationDto operatorInput)
+        {
+            Console.WriteLine($"Received operator creation request: Name={operatorInput.Name}, Emails={string.Join("\n- ", operatorInput.Emails)}");
+            var operatorEntity = _mapper.Map<Operator>(operatorInput);
+            await _repository.CreateOperatorAsync(operatorEntity);
+            return CreatedAtAction(nameof(GetOperators), new { id = operatorEntity.Id }, operatorInput);
+        }
+        
+
+        }
 }
