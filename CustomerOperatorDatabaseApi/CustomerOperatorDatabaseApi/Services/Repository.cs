@@ -61,8 +61,7 @@ namespace CustomerOperatorDatabaseApi.Services
                     }
                     else
                     {
-                        // Create new email
-                        emailsToLink.Add(email);
+                        throw new Exception($"Email address '{email.Address}' does not exist in the database. Please create it first before linking to an operator.");
                     }
                 }
 
@@ -70,6 +69,7 @@ namespace CustomerOperatorDatabaseApi.Services
                 operatorEntity.Emails = emailsToLink;
 
                 await _context.Operators.AddAsync(operatorEntity);
+
                 await _context.SaveChangesAsync();
             }
 
