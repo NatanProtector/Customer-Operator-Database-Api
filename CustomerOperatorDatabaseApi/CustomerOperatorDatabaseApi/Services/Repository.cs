@@ -83,6 +83,15 @@ namespace CustomerOperatorDatabaseApi.Services
             return true;
         }
 
+        public async Task<IEnumerable<Email>> GetAllEmailsAsync()
+        {
+            IEnumerable<Email> emails = await _context.Emails
+                .Include(e => e.Operators)
+                .ToListAsync();
+
+            return emails;
+        }
+
         async public Task<IEnumerable<Customer>> GetCustomersAsync()
         {
             IEnumerable<Customer> customers = await _context.Customers

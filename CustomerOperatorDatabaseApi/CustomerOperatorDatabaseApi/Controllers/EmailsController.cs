@@ -1,4 +1,7 @@
-﻿using CustomerOperatorDatabaseApi.Model;
+﻿using AutoMapper;
+using CustomerOperatorDatabaseApi.Entities;
+using CustomerOperatorDatabaseApi.Model;
+using CustomerOperatorDatabaseApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CustomerOperatorDatabaseApi.Controllers
@@ -7,15 +10,32 @@ namespace CustomerOperatorDatabaseApi.Controllers
     [Route("api/[controller]")]
     public class EmailsController : ControllerBase
     {
+
+        private readonly IRepository _repository;
+        private readonly IMapper _mapper;
+
+        public EmailsController(IRepository repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmailDto>>> GetEmails()
         {
-            return Ok(new List<EmailDto>
+            try
             {
-                new EmailDto { Id = Guid.NewGuid(), Address = "test@test.com" }
-            });
+                IEnumerable<Email> emails = await _repository.GetAllEmailsAsync();
+                IEnumerable<EmailDto> emailDtos = _mapper.Map<IEnumerable<EmailDto>>(emails);
+                return Ok(emailDtos);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (you can use a logging framework here)
+                Console.WriteLine($"An error occurred while retrieving emails: {ex.Message}");
+                return StatusCode(500, "An error occurred while retrieving emails.");
+            }
         }
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmail(Guid id)
         {
