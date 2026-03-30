@@ -7,5 +7,6 @@
         Task<IEnumerable<Entities.Operator>> GetOperatorsAsync();
         Task<bool> CreateOperatorAsync(Entities.Operator operatorEntity);
         Task<bool> CreateCustomerAsync(Entities.Customer customerEntity);
+        Task<bool> CreateEmailsAsync(IEnumerable<Entities.Email> emails);
     }
 }

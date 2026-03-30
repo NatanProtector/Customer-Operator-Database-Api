@@ -9,6 +9,9 @@ namespace CustomerOperatorDatabaseApi.Profiles
         public EmailProfile()
         {
             CreateMap<Email, EmailDto>();
+
+            CreateMap<EmailForCreationDto, Email>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()));
         }
     }
 }

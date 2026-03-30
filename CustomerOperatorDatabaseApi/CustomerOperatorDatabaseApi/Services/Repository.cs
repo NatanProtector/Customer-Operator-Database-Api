@@ -110,5 +110,26 @@ namespace CustomerOperatorDatabaseApi.Services
             return operators;
         }
 
+        public async Task<bool> CreateEmailsAsync(IEnumerable<Email> emails)
+        {
+            if (emails == null || !emails.Any())
+            {
+                throw new ArgumentNullException(nameof(emails));
+            }
+
+            try
+            {
+                await _context.Emails.AddRangeAsync(emails);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while adding emails: {ex.Message}");
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }

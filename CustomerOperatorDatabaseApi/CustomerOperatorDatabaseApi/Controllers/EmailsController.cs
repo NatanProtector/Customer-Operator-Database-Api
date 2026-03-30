@@ -45,11 +45,19 @@ namespace CustomerOperatorDatabaseApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<EmailDto>> CreateEmail(EmailDto emailDto)
+        public async Task<ActionResult<IEnumerable<EmailDto>>> CreateEmails(
+            [FromBody] IEnumerable<EmailForCreationDto> emailForCreationDto)
         {
-            // Logic to create a new email
+            IEnumerable<Email> emailEntities = _mapper.Map<IEnumerable<Email>>(emailForCreationDto);
 
-            return CreatedAtAction(nameof(GetEmails), new { id = emailDto.Id }, emailDto);
+            var result = await _repository.CreateEmailsAsync(emailEntities);
+            if (!result)
+            {
+                return BadRequest("Failed to create emails.");
+            }
+
+            var emailDtos = _mapper.Map<IEnumerable<EmailDto>>(emailEntities);
+            return CreatedAtAction(nameof(GetEmails), emailDtos);
         }
 
         [HttpPatch]
