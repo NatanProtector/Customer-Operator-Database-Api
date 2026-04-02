@@ -43,14 +43,18 @@ namespace CustomerOperatorDatabaseApi.Controllers
         {
             Console.WriteLine($"Received operator creation request: Name={operatorInput.Name}, Emails={string.Join("\n- ", operatorInput.Emails)}");
             var operatorEntity = _mapper.Map<Operator>(operatorInput);
-            await _repository.CreateOperatorAsync(operatorEntity);
-            return CreatedAtAction(nameof(GetOperators), new { id = operatorEntity.Id }, operatorInput);
+            if (!await _repository.CreateOperatorAsync(operatorEntity))
+            {
+                return BadRequest("Failed to create operator.");
+            }
+            return CreatedAtAction(nameof(GetOperatorById), new { id = operatorEntity.Id }, operatorInput);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOperator(Guid id) {
 
             var existingOperator = await _repository.GetOperatorByIdAsync(id);
+
             if (existingOperator == null)
             {
                 return NotFound();
@@ -63,8 +67,8 @@ namespace CustomerOperatorDatabaseApi.Controllers
             catch {
                 return StatusCode(500, "An error occurred while deleting the operator.");
             }
-            return NoContent();
 
+            return NoContent();
         }
     }
 }

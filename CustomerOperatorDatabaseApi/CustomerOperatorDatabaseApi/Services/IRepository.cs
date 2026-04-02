@@ -10,6 +10,8 @@
         Task<Entities.Operator?> GetOperatorByIdAsync(Guid id);
         Task<bool> DeleteOperatorAsync(Guid id);
         Task<bool> CreateCustomerAsync(Entities.Customer customerEntity);
+        Task<Entities.Customer?> GetCustomerByIdAsync(Guid id);
+        Task<bool> DeleteCustomerAsync(Guid id);
         Task<bool> CreateEmailsAsync(IEnumerable<Entities.Email> emails);
         Task<bool> UpdateEmailAsync(Entities.Email email);
     }

@@ -187,5 +187,25 @@ namespace CustomerOperatorDatabaseApi.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<Customer?> GetCustomerByIdAsync(Guid id)
+        {
+            var customer = await _context.Customers.FirstOrDefaultAsync(o => o.Id == id);
+
+            return customer;
+        }
+
+        public async Task<bool> DeleteCustomerAsync(Guid id)
+        {
+            var customerEntity = await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
+            if (customerEntity == null)
+            {
+                return false;
+            }
+
+            _context.Customers.Remove(customerEntity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
