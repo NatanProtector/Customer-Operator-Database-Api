@@ -39,7 +39,14 @@ namespace CustomerOperatorDatabaseApi.Services
         public async Task<bool> CreateOperatorAsync(Operator operatorEntity)
         {
 
-            if (operatorEntity == null)
+            var existingOperator = await _context.Operators
+                .FirstOrDefaultAsync(o => o.Name == operatorEntity.Name);
+            if (existingOperator != null)
+            {
+                throw new Exception($"An operator with the name '{operatorEntity.Name}' already exists. Please choose a different name.");
+            }
+
+                if (operatorEntity == null)
             {
                 throw new ArgumentNullException(nameof(operatorEntity));
             }
@@ -131,5 +138,54 @@ namespace CustomerOperatorDatabaseApi.Services
             return true;
         }
 
+        public async Task<Email?> GetEmailByIdAsync(Guid id)
+        {
+            return await _context.Emails
+                .Include(e => e.Operators)
+                .FirstOrDefaultAsync(e => e.Id == id);
+        }
+
+        public async Task<bool> UpdateEmailAsync(Email email)
+        {
+            if (email == null)
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+
+            try
+            {
+                _context.Emails.Update(email);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while updating email: {ex.Message}");
+                return false;
+            }
+
+            return true;
+        }
+
+        public Task<Operator?> GetOperatorByIdAsync(Guid id)
+        {
+            Operator? operatorEntity = _context.Operators
+                .Include(o => o.Emails)
+                .Include(o => o.Customers)
+                .FirstOrDefault(o => o.Id == id);
+            return Task.FromResult(operatorEntity);
+        }
+
+        public async Task<bool> DeleteOperatorAsync(Guid id)
+        {
+            var operatorEntity = await GetOperatorByIdAsync(id);
+            if (operatorEntity == null)
+            {
+                return false;
+            }
+
+            _context.Operators.Remove(operatorEntity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

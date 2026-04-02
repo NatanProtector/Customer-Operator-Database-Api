@@ -27,6 +27,17 @@ namespace CustomerOperatorDatabaseApi.Controllers
             return Ok(operatorDtos);
         }
 
+        public async Task<IActionResult> GetOperatorById(Guid id)
+        {
+            var operatorEntity = await _repository.GetOperatorByIdAsync(id);
+            if (operatorEntity == null)
+            {
+                return NotFound();
+            }
+            var operatorDto = _mapper.Map<OperatorDto>(operatorEntity);
+            return Ok(operatorDto);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateOperator([FromBody] OperatorForCreationDto operatorInput)
         {
@@ -35,7 +46,25 @@ namespace CustomerOperatorDatabaseApi.Controllers
             await _repository.CreateOperatorAsync(operatorEntity);
             return CreatedAtAction(nameof(GetOperators), new { id = operatorEntity.Id }, operatorInput);
         }
-        
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOperator(Guid id) {
+
+            var existingOperator = await _repository.GetOperatorByIdAsync(id);
+            if (existingOperator == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await _repository.DeleteOperatorAsync(id);
+            }
+            catch {
+                return StatusCode(500, "An error occurred while deleting the operator.");
+            }
+            return NoContent();
 
         }
+    }
 }

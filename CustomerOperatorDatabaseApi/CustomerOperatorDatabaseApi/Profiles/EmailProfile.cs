@@ -12,6 +12,10 @@ namespace CustomerOperatorDatabaseApi.Profiles
 
             CreateMap<EmailForCreationDto, Email>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()));
+
+            CreateMap<EmailForUpdatingDto, Email>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Operators, opt => opt.Ignore());
         }
     }
 }
